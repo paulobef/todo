@@ -1,0 +1,10 @@
+/* GLOBAL STYLES */
+
+#logo {
+    color: black;
+    font-weight: bold;
+}
+
+#logo:hover {
+    color: darkgrey;
+}
