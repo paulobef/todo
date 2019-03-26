@@ -6,32 +6,35 @@ const text = document.getElementById('todo_text');
 const dueDate = document.getElementById('todo_duedate');
 
 
-
-
-let todoData = {
-    text: text.value,
-    dueDate: dueDate.value,
-    isDue: false,
-    isDone: false
-
-  };
-
-  let todo = new Item(todoData);
-
-
+function createTodo(text, dueDate,) {
+    let todoData = {
+        text: text,
+        dueDate: dueDate,
+        isDue: false,
+        isDone: false
+    
+    };
+    
+    let todo = new Item(todoData);
+    let container = document.createElement('div');
+    container.innerHTML = todo.render();
+    app.appendChild(container);
+}
 
 
 // Press ENTER to display search results for input keyword
 text.addEventListener('keypress', function(e){
         
     if (e.keyCode == 13) {
-       todo.render();
+        createTodo(text.value, dueDate.value);
+        text.value = '';
     }
 
 });
 // Click "Search" to display search results for input keyword
 save.addEventListener('click', function() {
-    todo.render();
+    createTodo(text.value, dueDate.value);
+    text.value = '';
 });
 
 

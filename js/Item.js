@@ -3,6 +3,15 @@ document.componentRegistry = { };
 document.nextId = 0;
 document.today = new Date();
 
+function update(id, object) {
+    document.getElementById(id).parentElement.innerHTML = object.render();
+    console.log(object.state.text + ' is done ? ' + object.state.isDone);
+};
+
+function deletE(id) {
+    document.getElementById(id).parentElement.innerHTML = '';
+    console.log('todo #' + id + ' deleted')
+}
 
 class Component {
   constructor() {
@@ -23,58 +32,56 @@ class Item extends Component {
       isDone: props.isDone
     }
 
-    this.container = document.createElement('container');
-    this.container.setAttribute('id', this._id);
-    this.template = `
-                    <div class="card-group row ${this.state.isDone ? `text-grey` : ``}">
-                    <div class="card col-sm-6">
-                        <div class="card-body">
-                        ${this.state.text}
-                        </div>
-                    </div>
-                    <div class="card col-sm-3 ${this.state.isDue ? `bg-danger text-white` : ``}">
-                        <div class="card-body text-right">
-                            <div>
-                            <span>${this.state.dueDate}</span>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="card col-sm-3">
-                            <div class="card-body text-right">
-                            <button class="btn btn-primary btn-sm" onclick="document.componentRegistry[${this._id}].isDone(this.value)" >Done</button>
-                            ${this.state.isDue ? `<button id=${this.id} class="btn btn-secondary btn-sm">Procrastinate</button>` : ``}
-                            </div>
-                        </div>
-                    </div>`
+
+
   }
 
     isDue() {
         this.state.isDue = true;
+        return console.log('is Due called')
     }
 
     isItDue() {
         if (document.today > this.dueDate) {
             this.isDue();
         }
-
+        return console.log('isItDue called')
     }
 
     isDone() {
         this.state.isDone = true;
-        this.update();
+        update(this._id, this)
+        return console.log('isDone called')
     }
 
     render() {
 
             this.isItDue();
-
-            this.container.innerHTML = this.template;
-            app.innerHTML += this.container.innerHTML
+            return `<div id=${this._id} class="container">
+                        <div class="card-group row">
+                            <div class="card col-sm-6 ${this.state.isDone ? `text-white bg-success` : ``}">
+                                <div class="card-body">
+                                ${this.state.text}
+                                </div>
+                            </div>
+                            <div class="card col-sm-3 ${this.state.isDone ? `text-white bg-success` : ``} ${this.state.isDue ? `bg-danger text-white` : ``}">
+                                <div class="card-body text-right">
+                                    <div>
+                                    <span>${this.state.dueDate}</span>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="card col-sm-3 ${this.state.isDone ? `text-white bg-success` : ``}">
+                                    <div class="card-body text-right">
+                                    ${!this.state.isDone ? `<button class="btn btn-primary btn-sm" onclick="document.componentRegistry[${this._id}].isDone()" >Done</button>` : `<button onclick="deletE(${this._id})"class="btn btn-danger btn-sm">Delete</button>`}
+                                    ${this.state.isDue ? `<button class="btn btn-secondary btn-sm">Procrastinate</button>` : ``}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+            
     }
-    update() {
-        document.getElementById(this._id).innerHTML = this.template;
-    }
-
     
 }
 
