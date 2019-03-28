@@ -1,22 +1,8 @@
 
-document.componentRegistry = { };
-document.nextId = 0;
-document.today = new Date();
-
-function update(id, object) {
-    document.getElementById(id).parentElement.innerHTML = object.render();
-    console.log(object.state.text + ' is done ? ' + object.state.isDone);
-};
-
-function deletE(id) {
-    document.getElementById(id).parentElement.innerHTML = '';
-    console.log('todo #' + id + ' deleted')
-}
-
 class Component {
   constructor() {
-    this._id = ++document.nextId;
-    document.componentRegistry[this._id] = this;
+    this._id = ++todoModule.nextComposantId;
+    todoModule.componentRegistry[this._id] = this;
   }
 }
 
@@ -42,7 +28,7 @@ class Item extends Component {
     }
 
     isItDue() {
-        if (document.today > this.dueDate) {
+        if (todoModule.today > this.dueDate) {
             this.isDue();
         }
         return console.log('isItDue called')
@@ -50,7 +36,7 @@ class Item extends Component {
 
     isDone() {
         this.state.isDone = true;
-        update(this._id, this)
+        todoModule.update(this._id, this)
         return console.log('isDone called')
     }
 
@@ -73,7 +59,7 @@ class Item extends Component {
                                 </div>
                                 <div class="card col-sm-3 ${this.state.isDone ? `text-white bg-success` : ``}">
                                     <div class="card-body text-right">
-                                    ${!this.state.isDone ? `<button class="btn btn-primary btn-sm" onclick="document.componentRegistry[${this._id}].isDone()" >Done</button>` : `<button onclick="deletE(${this._id})"class="btn btn-danger btn-sm">Delete</button>`}
+                                    ${!this.state.isDone ? `<button class="btn btn-primary btn-sm" onclick="todoModule.componentRegistry[${this._id}].isDone()" >Done</button>` : `<button onclick="todoModule.deletE(${this._id})"class="btn btn-danger btn-sm">Delete</button>`}
                                     ${this.state.isDue ? `<button class="btn btn-secondary btn-sm">Procrastinate</button>` : ``}
                                     </div>
                                 </div>
