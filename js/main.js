@@ -2,18 +2,35 @@
 
 const todoModule = (function () {
 
+
   return {
 
     // DOM Elements
     app: document.getElementById('root'),
-    save: document.getElementById('save'),
-    text: document.getElementById('todo_text'),
-    dueDate: document.getElementById('todo_duedate'),
+    saveButton: document.getElementById('save'),
+    
 
-    // Managing the multiple components through ids and componentn registry
-    componentRegistry: { },
+    // Managing the multiple components through ids and component registry
+    componentRegistry: {},
     nextComposantId: 0,
-    today: new Date(),
+    now: moment(),
+    
+    createTodo: function() {
+      
+      let todoData = {
+        text: document.getElementById('todo_text').value,
+        dueDate: $('#datetimepicker2').datetimepicker('viewDate')._d,
+        dateString: document.getElementById('todo_duedate').value,
+        due: false,
+        done: false
+    
+      }
+
+      let todo = new Item(todoData);
+      let container = document.createElement('div');
+      container.innerHTML = todo.render();
+      this.app.appendChild(container);
+    },
     
     // rerendering function
     update: function(id, object) {
@@ -24,23 +41,8 @@ const todoModule = (function () {
     deletE: function(id) {
         document.getElementById(id).parentElement.innerHTML = '';
         console.log('todo #' + id + ' deleted')
-    },
+    }
  
-    createTodo: function() {
-      
-      let todoData = {
-        text: this.text.value,
-        dueDate: this.dueDate.value,
-        isDue: false,
-        isDone: false
-    
-      };
-      let todo = new Item(todoData);
-      let container = document.createElement('div');
-      container.innerHTML = todo.render();
-      this.app.appendChild(container);
-  }
-
     
     }
 })();
@@ -50,18 +52,18 @@ const todoModule = (function () {
 
 
 // Press ENTER to display search results for input keyword
-todoModule.text.addEventListener('keypress', function(e){
+document.getElementById('todo_text').addEventListener('keypress', function(e){
         
     if (e.keyCode == 13) {
         todoModule.createTodo();
-        todoModule.text.value = '';
+        todoModule.text = '';
     }
 
 });
 // Click "Search" to display search results for input keyword
-todoModule.save.addEventListener('click', function() {
+todoModule.saveButton.addEventListener('click', function() {
     todoModule.createTodo();
-    todoModule.text.value = '';
+    todoModule.text = '';
 });
 
 
